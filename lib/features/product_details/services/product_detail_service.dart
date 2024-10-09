@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/src/foundation/change_notifier.dart';
 import 'package:amazon/constants/error_handling.dart';
 import 'package:amazon/constants/global_variables.dart';
 import 'package:amazon/constants/utils.dart';
@@ -33,9 +34,20 @@ class ProductDetailsServices {
         response: res,
         context: context,
         onSuccess: () {
-          User user =
-              userProvider.user.copyWith(cart: jsonDecode(res.body)['cart']);
-          userProvider.setUserFromModel(user);
+            final responseBody = jsonDecode(res.body);
+
+            // Update the user's cart from the response
+            User user = userProvider.user.copyWith(
+              cart: List<Map<String, dynamic>>.from(
+                responseBody['cart'].map((x) => Map<String, dynamic>.from(x)),
+              ),
+            );
+
+            // Set the updated user in the provider and notify listeners
+            userProvider.setUserFromModel(user);
+            userProvider.notifyListeners(); // Ensure that listeners are notified
+            print("Cart after adding: ${userProvider.user.cart.length}");     
+      
         },
       );
     } catch (e) {

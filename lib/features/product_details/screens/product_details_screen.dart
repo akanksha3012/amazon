@@ -1,5 +1,6 @@
 import 'package:amazon/common/widgets/custom_button.dart';
 import 'package:amazon/common/widgets/stars.dart';
+import 'package:amazon/features/cart/screens/cart_screen.dart';
 import 'package:amazon/features/product_details/services/product_detail_service.dart';
 import 'package:amazon/providers/user_provider.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -49,12 +50,20 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   void navigateToSearchScreen(String query) {
     Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
+  void buynow(){
+    productDetailsServices.addToCart(
+      context: context,
+      product: widget.product,
+    );
+    Navigator.pushNamed(context, CartScreen.routeName);
+  }
 
   void addToCart() {
     productDetailsServices.addToCart(
       context: context,
       product: widget.product,
     );
+    //Navigator.pushNamed(context, CartScreen.routeName);
   }
 
   @override
@@ -218,10 +227,10 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
               padding: const EdgeInsets.all(10),
               child: CustomButton(
                 text: 'Buy Now',
-                onTap: () {},
+                onTap: buynow,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 5),
             Padding(
               padding: const EdgeInsets.all(10),
               child: CustomButton(

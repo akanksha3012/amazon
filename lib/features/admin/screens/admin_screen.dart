@@ -1,9 +1,12 @@
 import 'package:amazon/constants/global_variables.dart';
+//import 'package:amazon/features/admin/screens/analtyics_screen.dart';
+import 'package:amazon/features/admin/screens/orders_screen.dart';
 import 'package:amazon/features/admin/screens/post_screen.dart';
+import 'package:amazon/features/admin/services/admin_services.dart';
 import 'package:flutter/material.dart';
 
- class AdminScreen extends StatefulWidget {
-  const AdminScreen({super.key});
+class AdminScreen extends StatefulWidget {
+  const AdminScreen({Key? key}) : super(key: key);
 
   @override
   State<AdminScreen> createState() => _AdminScreenState();
@@ -15,9 +18,9 @@ class _AdminScreenState extends State<AdminScreen> {
   double bottomBarBorderWidth = 5;
 
   List<Widget> pages = [
-    const PostScreen(),
-    const Center(child:Text('Analytics Page'),),
-    const Center(child:Text('Cart Page'),),
+    const PostsScreen(),
+    Center(child: const Text("AnalyticsScreen")),
+    const OrdersScreen(),
   ];
 
   void updatePage(int page) {
@@ -25,10 +28,11 @@ class _AdminScreenState extends State<AdminScreen> {
       _page = page;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:PreferredSize(
+      appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
           flexibleSpace: Container(
@@ -36,20 +40,36 @@ class _AdminScreenState extends State<AdminScreen> {
               gradient: GlobalVariables.appBarGradient,
             ),
           ),
-          title:Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 alignment: Alignment.topLeft,
-                child: Image.asset('asset/images/amazon_in.png',width:120, height:45, color: Colors.black),
+                child: Image.asset(
+                  'assets/images/amazon_in.png',
+                  width: 120,
+                  height: 45,
+                  color: Colors.black,
+                ),
               ),
-              const Text('Admin', 
-              style: TextStyle(
-                color:Colors.black,
-                fontWeight: FontWeight.bold,
-                ))
-            ]
-          )
+              Row(
+                children: [
+                  const Text(
+                    'Admin',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  IconButton(
+            icon: const Icon(Icons.exit_to_app),
+            onPressed: () => AdminServices().logOut(context),
+            color: Colors.black,  // You can change the color as per your design
+          ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
       body: pages[_page],
@@ -61,7 +81,7 @@ class _AdminScreenState extends State<AdminScreen> {
         iconSize: 28,
         onTap: updatePage,
         items: [
-          // posts
+          // POSTS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -81,7 +101,7 @@ class _AdminScreenState extends State<AdminScreen> {
             ),
             label: '',
           ),
-          // Analytics
+          // ANALYTICS
           BottomNavigationBarItem(
             icon: Container(
               width: bottomBarWidth,
@@ -123,6 +143,6 @@ class _AdminScreenState extends State<AdminScreen> {
           ),
         ],
       ),
-  );
+    );
   }
 }

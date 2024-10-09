@@ -34,8 +34,9 @@ class _SearchScreenState extends State<SearchScreen> {
         context: context, searchQuery: widget.searchQuery);
     setState(() {});
   }
-  void navigateToSearchScreen (String query){
-    Navigator.pushNamed(context, SearchScreen.routeName);
+
+  void navigateToSearchScreen(String query) {
+    Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
   }
 
   @override

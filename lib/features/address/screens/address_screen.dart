@@ -10,6 +10,7 @@ import 'package:amazon/providers/user_provider.dart';
 class AddressScreen extends StatefulWidget {
   static const String routeName = '/address';
   final String totalAmount;
+
   const AddressScreen({
     Key? key,
     required this.totalAmount,
@@ -36,6 +37,7 @@ class _AddressScreenState extends State<AddressScreen> {
   @override
   void initState() {
     super.initState();
+    // Initialize payment items with total amount
     paymentItems.add(
       PaymentItem(
         amount: widget.totalAmount,
@@ -47,29 +49,15 @@ class _AddressScreenState extends State<AddressScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     flatBuildingController.dispose();
     areaController.dispose();
     pincodeController.dispose();
     cityController.dispose();
+    super.dispose();
   }
 
-  // void onApplePayResult(res) {
-  //   if (Provider.of<UserProvider>(context, listen: false)
-  //       .user
-  //       .address
-  //       .isEmpty) {
-  //     addressServices.saveUserAddress(
-  //         context: context, address: addressToBeUsed);
-  //   }
-  //   addressServices.placeOrder(
-  //     context: context,
-  //     address: addressToBeUsed,
-  //     totalSum: double.parse(widget.totalAmount),
-  //   );
-  // }
-
-  void onGooglePayResult(res) {
+  // Handling the Google Pay result
+  void onGooglePayResult(paymentResult) {
     if (Provider.of<UserProvider>(context, listen: false)
         .user
         .address
@@ -84,25 +72,28 @@ class _AddressScreenState extends State<AddressScreen> {
     );
   }
 
+  // Handle payment button press
   void payPressed(String addressFromProvider) {
     addressToBeUsed = "";
 
-    bool isForm = flatBuildingController.text.isNotEmpty ||
+    bool isFormFilled = flatBuildingController.text.isNotEmpty ||
         areaController.text.isNotEmpty ||
         pincodeController.text.isNotEmpty ||
         cityController.text.isNotEmpty;
 
-    if (isForm) {
+    if (isFormFilled) {
       if (_addressFormKey.currentState!.validate()) {
         addressToBeUsed =
             '${flatBuildingController.text}, ${areaController.text}, ${cityController.text} - ${pincodeController.text}';
       } else {
-        throw Exception('Please enter all the values!');
+        showSnackBar(context, 'Please fill in all the required fields.');
+        return;
       }
     } else if (addressFromProvider.isNotEmpty) {
       addressToBeUsed = addressFromProvider;
     } else {
-      showSnackBar(context, 'ERROR');
+      showSnackBar(context, 'Please enter or select an address.');
+      return;
     }
   }
 
@@ -126,6 +117,7 @@ class _AddressScreenState extends State<AddressScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
+              // Display the user's saved address if available
               if (address.isNotEmpty)
                 Column(
                   children: [
@@ -156,6 +148,7 @@ class _AddressScreenState extends State<AddressScreen> {
                     const SizedBox(height: 20),
                   ],
                 ),
+              // Address form
               Form(
                 key: _addressFormKey,
                 child: Column(
@@ -183,47 +176,50 @@ class _AddressScreenState extends State<AddressScreen> {
                   ],
                 ),
               ),
-              // ApplePayButton(
-              //   width: double.infinity,
-              //   style: ApplePayButtonStyle.whiteOutline,
-              //   type: ApplePayButtonType.buy,
-              //   paymentConfigurationAsset: 'applepay.json',
-              //   onPaymentResult: onApplePayResult,
-              //   paymentItems: paymentItems,
-              //   margin: const EdgeInsets.only(top: 15),
-              //   height: 50,
-              //   onPressed: () => payPressed(address),
-              // ),
               const SizedBox(height: 10),
+              // Google Pay Button
               FutureBuilder<PaymentConfiguration>(
                 future: _googlePayConfigFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
+                    // Show loading indicator while fetching configuration
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   } else if (snapshot.hasError) {
-                    return const Text('Error loading Google Pay configuration');
-                  } else if (snapshot.hasData) {
-                    return GooglePayButton(
-                      onPressed: () => payPressed(address),
-                      paymentConfiguration: snapshot.data!, // Use loaded configuration
-                      onPaymentResult: onGooglePayResult,
-                      paymentItems: paymentItems,
-                      height: 50,
-                      //buttonStyle: GooglePayButtonStyle.black, // Use style
-                      type: GooglePayButtonType.buy,
-                      margin: const EdgeInsets.only(top: 15),
-                      loadingIndicator: const Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                    // Log the error for debugging
+                    debugPrint('Error loading Google Pay configuration: ${snapshot.error}');
+                    return const Center(
+                      child: Text('Error loading Google Pay configuration.'),
                     );
+                  } else if (snapshot.hasData) {
+                    final config = snapshot.data;
+
+                    // Ensure the configuration is not null
+                    if (config != null) {
+                      return GooglePayButton(
+                        onPressed: () => payPressed(address),
+                        paymentConfiguration: config,
+                        onPaymentResult: onGooglePayResult,
+                        paymentItems: paymentItems,
+                        height: 50,
+                        type: GooglePayButtonType.buy,
+                        margin: const EdgeInsets.only(top: 15),
+                        loadingIndicator: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('Google Pay configuration is null.'),
+                      );
+                    }
                   } else {
-                    return const SizedBox.shrink(); // Handle unexpected states
+                    // Fallback for any unexpected state
+                    return const SizedBox.shrink();
                   }
                 },
               ),
-
             ],
           ),
         ),

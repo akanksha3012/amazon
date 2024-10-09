@@ -76,7 +76,4 @@ class HomeServices {
     }
     return product;
   }
-
-
-  
 }

@@ -1,4 +1,5 @@
 import 'package:amazon/models/user.dart';
+import 'package:flutter/src/foundation/change_notifier.dart';
 import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
@@ -10,7 +11,7 @@ class UserProvider extends ChangeNotifier {
     address: '',
     type: '',
     token: '',
-    
+    cart: [],
   );
 
   User get user => _user;

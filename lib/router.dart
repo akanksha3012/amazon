@@ -2,6 +2,7 @@ import 'package:amazon/common/widgets/bottom_bar.dart';
 import 'package:amazon/features/address/screens/address_screen.dart';
 import 'package:amazon/features/admin/screens/add_product_screen.dart';
 import 'package:amazon/features/auth/screens/auth_screen.dart';
+import 'package:amazon/features/cart/screens/cart_screen.dart';
 import 'package:amazon/features/home/screens/category_deals.dart';
 import 'package:amazon/features/home/screens/home_screen.dart';
 import 'package:amazon/features/order_details/screens/order_details.dart';
@@ -50,6 +51,11 @@ Route<dynamic> generateRoute(RouteSettings routeSettings) {
         builder: (_) => SearchScreen(
           searchQuery: searchQuery,
         ),
+      );
+    case CartScreen.routeName:
+      return MaterialPageRoute(
+        settings: routeSettings,
+        builder: (_) => CartScreen(),
       );
     case ProductDetailScreen.routeName:
       var product = routeSettings.arguments as Product;

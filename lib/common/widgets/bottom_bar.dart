@@ -2,6 +2,7 @@ import 'package:amazon/constants/global_variables.dart';
 import 'package:amazon/features/account/screens/account%20_screen.dart';
 import 'package:amazon/features/cart/screens/cart_screen.dart';
 import 'package:amazon/features/home/screens/home_screen.dart';
+import 'package:amazon/models/product.dart';
 import 'package:amazon/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,9 @@ class _BottomBarState extends State<BottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    //final userCartLen = context.watch<UserProvider>().user.cart.length;
+    final user = context.watch<UserProvider>().user;
+    int totalItemCount = user.cart.map((e) => e['quantity'] as int)  // Cast quantity to int
+      .fold(0, (previousValue, quantity) => previousValue + quantity);
 
     return Scaffold(
       body: pages[_page],
@@ -101,7 +104,7 @@ class _BottomBarState extends State<BottomBar> {
                 ),
               ),
               child: badges.Badge(
-              badgeContent: const Text('2'),
+              badgeContent: Text(totalItemCount.toString()),
               badgeStyle: badges.BadgeStyle(
                 elevation: 0,
                 badgeColor: Colors.white,
@@ -118,3 +121,18 @@ class _BottomBarState extends State<BottomBar> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

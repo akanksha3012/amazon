@@ -16,14 +16,20 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  void navigateToSearchScreen (String query){
-    Navigator.pushNamed(context, SearchScreen.routeName);
+  TextEditingController searchController = TextEditingController(); // Add this to control the search input
+
+  // Function to navigate to SearchScreen
+  void navigateToSearchScreen(String query) {
+    if (query.isNotEmpty) {
+      Navigator.pushNamed(context, SearchScreen.routeName, arguments: query);
+    }
   }
+
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserProvider>(context).user;
     return Scaffold(
-      appBar:PreferredSize(
+      appBar: PreferredSize(
         preferredSize: const Size.fromHeight(60),
         child: AppBar(
           flexibleSpace: Container(
@@ -31,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
               gradient: GlobalVariables.appBarGradient,
             ),
           ),
-          title:Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
@@ -42,15 +48,20 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(7),
                     elevation: 1,
                     child: TextFormField(
-                      onFieldSubmitted: navigateToSearchScreen,
-                      decoration:InputDecoration(
+                      controller: searchController, // Assign the controller here
+                      onFieldSubmitted: navigateToSearchScreen, // When the user submits, navigate
+                      decoration: InputDecoration(
                         prefixIcon: InkWell(
-                          onTap:(){},
+                          onTap: () {
+                            String query = searchController.text.trim();
+                            if (query.isNotEmpty) {
+                              navigateToSearchScreen(query); // Call the search function
+                            }
+                          },
                           child: const Padding(
-                            padding: EdgeInsets.only(left:6,),
-                            child: Icon(Icons.search, color: Colors.black, size: 23)
+                            padding: EdgeInsets.only(left: 6),
+                            child: Icon(Icons.search, color: Colors.black, size: 23),
                           ),
-                          
                         ),
                         filled: true,
                         fillColor: Colors.white,
@@ -62,36 +73,37 @@ class _HomeScreenState extends State<HomeScreen> {
                         enabledBorder: const OutlineInputBorder(
                           borderRadius: BorderRadius.all(Radius.circular(7)),
                           borderSide: BorderSide(color: Colors.black38, width: 1),
-                          
                         ),
                         hintText: 'Search Amazon.in',
                         hintStyle: const TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 17,
                         ),
-                      )
-                    )
+                      ),
                     ),
+                  ),
                 ),
               ),
               Container(
                 color: Colors.transparent,
                 height: 42,
                 margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: const Icon(Icons.mic, color: Colors.black, size : 25,)
+                child: const Icon(Icons.mic, color: Colors.black, size: 25),
               ),
-            ]
-          )
+            ],
+          ),
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(children: [
-          AddressBox(),
-          SizedBox(height: 10,),
-          TopCategories(),
-          CarouselImage(),
-        ],),
-      )
+        child: Column(
+          children: [
+            AddressBox(),
+            SizedBox(height: 10),
+            TopCategories(),
+            CarouselImage(),
+          ],
+        ),
+      ),
     );
   }
 }

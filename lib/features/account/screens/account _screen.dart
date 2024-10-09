@@ -5,12 +5,12 @@ import 'package:amazon/features/account/widgets/top_buttons.dart';
 import 'package:flutter/material.dart';
 
 class AccountScreen extends StatelessWidget {
-  const AccountScreen({super.key});
+  const AccountScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:PreferredSize(
+      appBar: PreferredSize(
         preferredSize: const Size.fromHeight(50),
         child: AppBar(
           flexibleSpace: Container(
@@ -18,27 +18,34 @@ class AccountScreen extends StatelessWidget {
               gradient: GlobalVariables.appBarGradient,
             ),
           ),
-          title:Row(
+          title: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
                 alignment: Alignment.topLeft,
-                child: Image.asset('asset/images/amazon_in.png',width:120, height:45, color: Colors.black),
+                child: Image.asset(
+                  'assets/images/amazon_in.png',
+                  width: 120,
+                  height: 45,
+                  color: Colors.black,
+                ),
               ),
               Container(
-                padding: const EdgeInsets.only(left:15, right:15),
+                padding: const EdgeInsets.only(left: 15, right: 15),
                 child: Row(
                   children: const [
                     Padding(
-                      padding: EdgeInsets.only(right:15),
-                    child: Icon(Icons.notifications_outlined),
+                      padding: EdgeInsets.only(right: 15),
+                      child: Icon(Icons.notifications_outlined),
                     ),
-                    Icon(Icons.search),
+                    Icon(
+                      Icons.search,
+                    ),
                   ],
                 ),
               )
-            ]
-          )
+            ],
+          ),
         ),
       ),
       body: Column(
@@ -48,7 +55,8 @@ class AccountScreen extends StatelessWidget {
           TopButtons(),
           SizedBox(height: 20),
           Orders(),
-      ],)
+        ],
+      ),
     );
   }
 }

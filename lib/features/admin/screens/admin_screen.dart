@@ -1,4 +1,5 @@
 import 'package:amazon/constants/global_variables.dart';
+import 'package:amazon/features/admin/screens/analytics_screen.dart';
 //import 'package:amazon/features/admin/screens/analtyics_screen.dart';
 import 'package:amazon/features/admin/screens/orders_screen.dart';
 import 'package:amazon/features/admin/screens/post_screen.dart';
@@ -19,7 +20,7 @@ class _AdminScreenState extends State<AdminScreen> {
 
   List<Widget> pages = [
     const PostsScreen(),
-    Center(child: const Text("AnalyticsScreen")),
+    const AnalyticsScreen(),
     const OrdersScreen(),
   ];
 

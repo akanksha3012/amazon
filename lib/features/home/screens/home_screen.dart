@@ -1,6 +1,7 @@
 import 'package:amazon/constants/global_variables.dart';
 import 'package:amazon/features/home/widgets/address_box.dart';
 import 'package:amazon/features/home/widgets/carousel_image.dart';
+import 'package:amazon/features/home/widgets/deal_of_day.dart';
 import 'package:amazon/features/home/widgets/top_categories.dart';
 import 'package:amazon/features/search/screens/search_screens.dart';
 import 'package:amazon/providers/user_provider.dart';
@@ -101,6 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(height: 10),
             TopCategories(),
             CarouselImage(),
+            DealOfDay(),
           ],
         ),
       ),
